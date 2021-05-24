@@ -8,8 +8,11 @@
 2. Activate the source
    `source object_remover_env/bin/activate`
 
-3. Install dependencies
+3. Upgrade pip
+   `pip install --upgrade pip`
+
+4. Install dependencies
    `pip install -r requirements.txt`
 
-4. Run the server. <i>The server runs on port 4000 by default. </i>
+5. Run the server. <i>The server runs on port 4000 by default. </i>
    `python app.py --port PORT_NUMBER`

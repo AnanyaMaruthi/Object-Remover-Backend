@@ -1,31 +1,45 @@
 from flask import Flask, request, jsonify
 import argparse
+import base64
+import cv2
+import numpy as np
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def home():
     return "Automatic Object Remover API"
 
-@app.route("/inpaint", methods=["POST"])  
+
+@app.route("/inpaint", methods=["POST"])
 def inpaint_image():
     try:
-        image = request.files["image"]
         object_label = request.form["object_label"]
-        response = jsonify({})
+
+        image = request.files["image"].read()
+        npimg = np.fromstring(image, np.uint8)
+        img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+        cv2.imwrite("images/sample.jpg", img)
+
+        img = cv2.imread("images/sample.jpg")
+        _, buffer = cv2.imencode(".jpg", img)
+        image_string = base64.b64encode(buffer)
+
+        response = jsonify({"image_string": str(image_string)})
         response.status_code = 200
         return response
     except:
         response = jsonify({"error": "Something went wrong"})
-        response.status_code(400)
+        response.status_code = 500
         return response
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--port', type=int, help='Server Port Number, default=4000')
+    parser.add_argument("--port", type=int, help="Server Port Number, default=4000")
     args = parser.parse_args()
 
     port = args.port if args.port is not None else 4000
-    
+
     app.run(port=port, debug=True)
