@@ -3,6 +3,7 @@ import argparse
 import base64
 import cv2
 import numpy as np
+import io
 
 app = Flask(__name__)
 
@@ -33,6 +34,15 @@ def inpaint_image():
         response = jsonify({"error": "Something went wrong"})
         response.status_code = 500
         return response
+
+
+@app.after_request
+def after_request(response):
+
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    # response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    # response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE")
+    return response
 
 
 if __name__ == "__main__":
